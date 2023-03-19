@@ -1,1 +1,1 @@
-# openplayground-termux
+# openplayground-cli

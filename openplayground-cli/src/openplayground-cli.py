@@ -5,7 +5,6 @@ import sys
 import tempfile
 
 token_name = "OPENPLAYGROUND_TOKEN"
-email_name = "OPENPLAYGROUND_EMAIL"
 
 temp = tempfile.gettempdir() + "/openplayground.env"
 
@@ -14,18 +13,14 @@ if (dotenv.load_dotenv(temp) == False):
     
 auth = openplayground.Auth()
 
-print("openplayground-cli")
 print("-----------------------")
 print("openplayground-cli")
 print("CLI app for OpenPlayground utilizing openplayground-api")
 print("-----------------------")
-if os.environ.get(email_name) is None:
-	os.environ[email_name] = input("Please enter openplayground's email: \n")
-	dotenv.set_key(temp, email_name, os.environ[email_name])
-  
 if os.environ.get(token_name) is None:
+  # TODO : check is token valid
   print("there is no token, preparing to authenticate...")
-  auth.login_part_1(os.environ[email_name])
+  auth.login_part_1(input("Please enter openplayground's email: \n"))
   os.environ[token_name] = auth.login_part_2(input("enter otp key: \n"))
   dotenv.set_key(temp, token_name, os.environ[token_name])
 

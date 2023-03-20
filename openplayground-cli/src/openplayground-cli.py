@@ -2,14 +2,15 @@ import openplayground
 import dotenv
 import os
 import sys
+import tempfile
 
 token_name = "OPENPLAYGROUND_TOKEN"
 email_name = "OPENPLAYGROUND_EMAIL"
 
-dotenv_file = dotenv.find_dotenv()
+temp = tempfile.gettempdir() + "/openplayground.env"
 
-if (dotenv.load_dotenv(dotenv_file) == False):
-  open(".env", "a+")
+if (dotenv.load_dotenv(temp) == False):
+  open(temp, "a+")
     
 auth = openplayground.Auth()
 
@@ -20,13 +21,13 @@ print("CLI app for OpenPlayground utilizing openplayground-api")
 print("-----------------------")
 if os.environ.get(email_name) is None:
 	os.environ[email_name] = input("Please enter openplayground's email: \n")
-	dotenv.set_key(dotenv_file, email_name, os.environ[email_name])
+	dotenv.set_key(temp, email_name, os.environ[email_name])
   
 if os.environ.get(token_name) is None:
   print("there is no token, preparing to authenticate...")
   auth.login_part_1(os.environ[email_name])
   os.environ[token_name] = auth.login_part_2(input("enter otp key: \n"))
-  dotenv.set_key(dotenv_file, token_name, os.environ[token_name])
+  dotenv.set_key(temp, token_name, os.environ[token_name])
 
 client = openplayground.Client(os.environ[token_name])
 
@@ -38,3 +39,4 @@ for models in client.get_models():
 # for chunk in client.generate("openai:gpt-4", prompt, maximum_length=1000):
 #   if chunk["event"] == "infer":
 #     print(chunk["message"], end="", flush=True)
+    
